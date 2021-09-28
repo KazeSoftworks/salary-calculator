@@ -4,13 +4,15 @@ const path = require('path');
 const fileLoader = (fileName) => {
 	return new Promise((resolve, reject) => {
 		fs.readFile(
-			`${path.dirname(require.main.filename)}/data/${fileName}`,
+			`${path.dirname(require.main.filename)}/datas/${fileName}`,
 			(err, data) => {
 				if (err) {
-					console.error(err);
-					return;
+					return reject(
+						new Error('[File loader] File could not be read')
+					);
 				}
-				console.log(data.toString());
+				employeesData = data.toString().split('\n');
+				return resolve(employeesData);
 			}
 		);
 	});
