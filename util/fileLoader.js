@@ -4,7 +4,7 @@ const path = require('path');
 const fileLoader = (fileName) => {
 	return new Promise((resolve, reject) => {
 		fs.readFile(
-			`${path.dirname(require.main.filename)}/datas/${fileName}`,
+			`${path.dirname(require.main.filename)}/data/${fileName}`,
 			(err, data) => {
 				if (err) {
 					return reject(
