@@ -19,12 +19,12 @@ const getDay = (employeeSchedule) => {
 };
 
 const getStartShift = (employeeSchedule) => {
-	startShift = employeeSchedule.substring(3).split('-');
+	startShift = employeeSchedule.substring(2).split('-');
 	return startShift[0];
 };
 
 const getEndShift = (employeeSchedule) => {
-	endShift = employeeSchedule.substring(3).split('-');
+	endShift = employeeSchedule.substring(2).split('-');
 	return endShift[1];
 };
 
