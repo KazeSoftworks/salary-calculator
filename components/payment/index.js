@@ -8,7 +8,7 @@ const isWeekend = (day) => {
 const getShiftNames = (start, end) => {
 	return Object.keys(SHIFT_HOURS_START).filter(
 		(key) =>
-			SHIFT_HOURS_START[key] <= end && SHIFT_HOURS_END[key] >= start
+			SHIFT_HOURS_START[key] < end && SHIFT_HOURS_END[key] >= start
 	);
 };
 
@@ -32,17 +32,45 @@ const calculateSalary = (workTime, shiftName, day) => {
 
 const getPayroll = (shift) => {
 	const shiftNames = getShiftNames(shift.start, shift.end);
-	if (shiftNames.length === 1) {
-		const workTime = getHours(shift.end) - getHours(shift.start);
-		const salary = calculateSalary(
-			workTime,
-			shiftNames[0],
-			shift.day
-		);
-		return salary;
-	}
+	// if (shiftNames.length === 1) {
+	// 	const workTime = getHours(shift.end) - getHours(shift.start);
+	// 	const salary = calculateSalary(
+	// 		workTime,
+	// 		shiftNames[0],
+	// 		shift.day
+	// 	);
+	// 	return salary;
+	// }
 
-	//return salary;
+	console.log(shiftNames);
+	const salary = shiftNames.reduce((previous, currentShift) => {
+		console.log(shift);
+		if (
+			getHours(shift.end) <= getHours(SHIFT_HOURS_END[currentShift])
+		) {
+			const workTime = getHours(shift.end) - getHours(shift.start);
+			const partialSalary = calculateSalary(
+				workTime,
+				currentShift,
+				shift.day
+			);
+			console.log(partialSalary);
+			return previous + partialSalary;
+		} else {
+			const workTime =
+				getHours(SHIFT_HOURS_END[currentShift]) -
+				getHours(shift.start);
+			const partialSalary = calculateSalary(
+				workTime,
+				currentShift,
+				shift.day
+			);
+			console.log(partialSalary);
+			shift.start = SHIFT_HOURS_END[currentShift];
+			return previous + partialSalary;
+		}
+	}, 0);
+	return salary;
 };
 
 const getSalary = (employee) => {
