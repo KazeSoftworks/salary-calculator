@@ -4,4 +4,5 @@ class Employee {
 		this.shifts = shifts;
 	}
 }
+
 module.exports = Employee;
