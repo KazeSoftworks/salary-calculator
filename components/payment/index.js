@@ -12,14 +12,22 @@ const getShiftNames = (start, end) => {
 	);
 };
 
-const getHours = (time) => {
+const getHours = (time, isEnd) => {
 	//clock[0] is hour, clock[1] is minutes
 	//Specific on a 23:59 time that requires 24 for calculation
 	clock = time.split(':').map(Number);
-	if (clock[1] >= 59) {
-		clock[0] + 1;
+	if (clock[0] === 0 && isEnd) {
+		return 24;
 	}
 	return clock[0];
+};
+
+const get24Format = (time) => {
+	clock = time.split(':').map(Number);
+	if (clock[0] === 0) {
+		return '23:59';
+	}
+	return time;
 };
 
 const calculateSalary = (workTime, shiftName, day) => {
@@ -31,41 +39,39 @@ const calculateSalary = (workTime, shiftName, day) => {
 };
 
 const getPayroll = (shift) => {
-	const shiftNames = getShiftNames(shift.start, shift.end);
-	// if (shiftNames.length === 1) {
-	// 	const workTime = getHours(shift.end) - getHours(shift.start);
-	// 	const salary = calculateSalary(
-	// 		workTime,
-	// 		shiftNames[0],
-	// 		shift.day
-	// 	);
-	// 	return salary;
-	// }
-
-	console.log(shiftNames);
+	const shiftNames = getShiftNames(
+		shift.start,
+		get24Format(shift.end)
+	);
+	// console.log(shiftNames);
 	const salary = shiftNames.reduce((previous, currentShift) => {
-		console.log(shift);
+		// console.log(
+		// 	get24Format(shift.end),
+		// 	get24Format(SHIFT_HOURS_END[currentShift])
+		// );
 		if (
-			getHours(shift.end) <= getHours(SHIFT_HOURS_END[currentShift])
+			get24Format(shift.end) <=
+			get24Format(SHIFT_HOURS_END[currentShift])
 		) {
-			const workTime = getHours(shift.end) - getHours(shift.start);
+			const workTime =
+				getHours(shift.end, true) - getHours(shift.start);
 			const partialSalary = calculateSalary(
 				workTime,
 				currentShift,
 				shift.day
 			);
-			console.log(partialSalary);
+			// console.log(partialSalary);
 			return previous + partialSalary;
 		} else {
 			const workTime =
-				getHours(SHIFT_HOURS_END[currentShift]) -
+				getHours(SHIFT_HOURS_END[currentShift], true) -
 				getHours(shift.start);
 			const partialSalary = calculateSalary(
 				workTime,
 				currentShift,
 				shift.day
 			);
-			console.log(partialSalary);
+			// console.log(partialSalary);
 			shift.start = SHIFT_HOURS_END[currentShift];
 			return previous + partialSalary;
 		}
@@ -74,7 +80,6 @@ const getPayroll = (shift) => {
 };
 
 const getSalary = (employee) => {
-	console.log(employee.name);
 	const salary = employee.shifts.reduce((previous, current) => {
 		return previous + getPayroll(current);
 	}, 0);
