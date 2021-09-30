@@ -1,6 +1,6 @@
 WEEKENDS = ['SA', 'SU'];
 SHIFT_HOURS_START = {
-	morning: '00:01',
+	morning: '00:00',
 	afternoon: '09:01',
 	night: '18:01',
 };

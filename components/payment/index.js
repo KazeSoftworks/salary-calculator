@@ -1,4 +1,3 @@
-const { time } = require('console');
 const schedule = require('./schedule');
 
 const isWeekend = (day) => {
@@ -8,7 +7,7 @@ const isWeekend = (day) => {
 const getShiftNames = (start, end) => {
 	return Object.keys(SHIFT_HOURS_START).filter(
 		(key) =>
-			SHIFT_HOURS_START[key] < end && SHIFT_HOURS_END[key] >= start
+			SHIFT_HOURS_START[key] < end && SHIFT_HOURS_END[key] > start
 	);
 };
 
@@ -43,12 +42,8 @@ const getPayroll = (shift) => {
 		shift.start,
 		get24Format(shift.end)
 	);
-	// console.log(shiftNames);
+	//console.log(shiftNames);
 	const salary = shiftNames.reduce((previous, currentShift) => {
-		// console.log(
-		// 	get24Format(shift.end),
-		// 	get24Format(SHIFT_HOURS_END[currentShift])
-		// );
 		if (
 			get24Format(shift.end) <=
 			get24Format(SHIFT_HOURS_END[currentShift])
@@ -84,6 +79,11 @@ const getSalary = (employee) => {
 		return previous + getPayroll(current);
 	}, 0);
 	console.log(`The amount to pay ${employee.name} is ${salary} USD`);
+	return salary;
 };
 
-module.exports = getSalary;
+module.exports = {
+	payment: getSalary,
+	getShiftNames,
+	calculateSalary,
+};
